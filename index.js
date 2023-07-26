@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
+const table = require("console.table");
 const db = mysql.createConnection(
     {
       host: 'localhost',
@@ -35,15 +36,7 @@ const employeeQuestions = [
     {
         name: "employeeRole",
         message: "What is the employee's role?",
-        choices : [db.query('SELECT * FROM role', function (err, results) {
-            if (err) {
-              console.log(err);
-              return;
-            }else if(results){
-                
-            }
-            
-          })]
+        choices : []
     }
 ]
 const departmentQuestions = [
@@ -72,6 +65,24 @@ const roleQuestions = [
 ]
 function viewEmployee(){
     db.query('SELECT * FROM employee', function (err, results) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.table(results);
+  });
+  }
+function viewRoles(){
+    db.query('SELECT * FROM roles', function (err, results) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.table(results);
+  });
+  }
+function viewDepartment(){
+    db.query('SELECT * FROM department', function (err, results) {
     if (err) {
       console.log(err);
       return;

@@ -5,7 +5,7 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "665752",
+    password: "rootRoot",
     database: "employees_db",
   },
   console.log(`Connected to the employee_db database.`)
@@ -27,6 +27,7 @@ const mainQuestion = {
   ],
   loop: false,
 };
+
 const employeeQuestions = [
   {
     name: "firstName",
@@ -41,7 +42,7 @@ const employeeQuestions = [
   {
     name: "employeeRole",
     message: "What is the employee's role?",
-    choices: [],
+    choices: deptChoices,
   },
 ];
 const departmentQuestions = [
@@ -68,46 +69,40 @@ const roleQuestions = [
     type: "input",
   },
 ];
-const  viewAllEmployees = () => {
-  db.query( `SELECT employee.id, 
-    employee.first_name, 
-    employee.last_name, 
-    role.title, 
-    department.department_name AS 'department',
-     role.salary FROM employee, role, 
-     department WHERE department.id = role.department_id 
-     AND role.id = employee.role_id 
-     ORDER BY employee.id ASC`, function (err, results) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.table(results);
-    }
-  );
-}
-function viewRoles() {
-  db.query("SELECT * FROM roles", function (err, results) {
+const viewAllEmployees = () => {
+  db.query(`SELECT * FROM employees`, (err, results) => {
     if (err) {
       console.log(err);
       return;
     }
     console.table(results);
+    init()
   });
-}
-function viewDepartment() {
-  db.query("SELECT * FROM department", function (err, results) {
+};
+const viewRoles = () => {
+  db.query("SELECT * FROM roles", (err, results) => {
     if (err) {
       console.log(err);
       return;
     }
     console.table(results);
+    init()
   });
-}
+};
+const viewAllDepartments = () => {
+  db.query(`SELECT * FROM departments`, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.table(results);
+    init()
+  });
+};
 
-function addRole() {
+const addRole = () => {
   inquirer.prompt(roleQuestions).then(
-    db.query("INSERT INTO role", function (err, results) {
+    db.query("INSERT INTO role", (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -115,10 +110,10 @@ function addRole() {
       console.table(results);
     })
   );
-}
-function addDepartment() {
+};
+const addDepartment = () => {
   inquirer.prompt(departmentQuestions).then(
-    db.query("INSERT INTO department", function (err, results) {
+    db.query("INSERT INTO department", (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -126,16 +121,24 @@ function addDepartment() {
       console.table(results);
     })
   );
-}
+};
 
-inquirer.prompt(mainQuestion).then((response) => {
-  if (response.initialize === "View All Employees") {
-    viewAllEmployees();
-  }
-  if (response.initialize === "Add Role") {
-    addRole();
-  }
-  if (response.initialize === "Add department") {
-    addDepartment();
-  }
-});
+const init = () => {
+  inquirer.prompt(mainQuestion)
+  .then((response) => {
+    if (response.initialize === "View All Employees") {
+      viewAllEmployees();
+    }
+    if (response.initialize === "Add Role") {
+      addRole();
+    }
+    if (response.initialize === "Add department") {
+      addDepartment();
+    }
+    if(response.initialize === "Quit"){
+        console.log("Have a good day!");
+        process.exit();
+    }
+  });
+}
+init();

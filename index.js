@@ -42,7 +42,7 @@ const employeeQuestions = [
   {
     name: "employeeRole",
     message: "What is the employee's role?",
-    choices: deptChoices,
+    choices: [],
   },
 ];
 const departmentQuestions = [
@@ -71,22 +71,18 @@ const roleQuestions = [
 ];
 const viewAllEmployees = () => {
   db.query(`SELECT * FROM employees`, (err, results) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    console.table(results);
-    init()
+   err ? console.error(err) : console.table(results);
+    init();
   });
 };
-const viewRoles = () => {
+const viewAllRoles = () => {
   db.query("SELECT * FROM roles", (err, results) => {
     if (err) {
       console.log(err);
       return;
     }
     console.table(results);
-    init()
+    init();
   });
 };
 const viewAllDepartments = () => {
@@ -96,24 +92,40 @@ const viewAllDepartments = () => {
       return;
     }
     console.table(results);
-    init()
+    init();
   });
 };
-
+const addDepartment = () => {
+  inquirer.prompt(departmentQuestions).then((response) => {
+    db.query(`INSERT INTO department(name) VALUES(?)`, response.addDepartment, (err, results) => {
+      if (err) {
+        console.log(err);
+      } else {
+        db.query(`SELECT * FROM department`, (err, results) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.table(results);
+          }
+          init();
+        });
+      }
+    });
+  });
+};
 const addRole = () => {
   inquirer.prompt(roleQuestions).then(
-    db.query("INSERT INTO role", (err, results) => {
+    db.promise().query("INSERT INTO role", (err, results) => {
       if (err) {
         console.log(err);
         return;
       }
-      console.table(results);
     })
   );
 };
-const addDepartment = () => {
-  inquirer.prompt(departmentQuestions).then(
-    db.query("INSERT INTO department", (err, results) => {
+const addEmployee = () => {
+  inquirer.prompt(roleQuestions).then(
+    db.query("INSERT INTO employee", (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -124,21 +136,32 @@ const addDepartment = () => {
 };
 
 const init = () => {
-  inquirer.prompt(mainQuestion)
-  .then((response) => {
-    if (response.initialize === "View All Employees") {
-      viewAllEmployees();
-    }
-    if (response.initialize === "Add Role") {
-      addRole();
-    }
-    if (response.initialize === "Add department") {
-      addDepartment();
-    }
-    if(response.initialize === "Quit"){
+  inquirer
+    .prompt(mainQuestion)
+    .then((response) => {
+      if (response.initialize === "View All Employees") {
+        return viewAllEmployees();
+      }
+      if (response.initialize === "View All Roles") {
+        viewAllRoles();
+      }
+      if (response.initialize === "View All Departments") {
+        viewAllDepartments();
+      }
+      if (response.initialize === "Add Role") {
+        addRole();
+      }
+      if (response.initialize === "Add Employee") {
+        addEmployee();
+      }
+      if (response.initialize === "Add department") {
+        addDepartment();
+      }
+      if (response.initialize === "Quit") {
         console.log("Have a good day!");
         process.exit();
-    }
-  });
-}
+      }
+    })
+    .catch((err) => console.error(err));
+};
 init();

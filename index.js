@@ -11,23 +11,22 @@ const db = mysql.createConnection(
   console.log(`Connected to the employee_db database.`)
 );
 
-const mainQuestion = 
-  {
-    name: "initialize",
-    type: "list",
-    message: "What would you like to do?",
-    choices: [
-      "View All Employees",
-      "Add Employees",
-      "Update Employee role",
-      "View All Roles",
-      "Add Role",
-      "View All Departments",
-      "Add Department",
-      "Quit"
-    ],
-    loop: false
-  };
+const mainQuestion = {
+  name: "initialize",
+  type: "list",
+  message: "What would you like to do?",
+  choices: [
+    "View All Employees",
+    "Add Employees",
+    "Update Employee role",
+    "View All Roles",
+    "Add Role",
+    "View All Departments",
+    "Add Department",
+    "Quit",
+  ],
+  loop: false,
+};
 const employeeQuestions = [
   {
     name: "firstName",
@@ -69,14 +68,23 @@ const roleQuestions = [
     type: "input",
   },
 ];
-function viewEmployee() {
-  db.query("SELECT * FROM employee", function (err, results) {
-    if (err) {
-      console.log(err);
-      return;
+const  viewAllEmployees = () => {
+  db.query( `SELECT employee.id, 
+    employee.first_name, 
+    employee.last_name, 
+    role.title, 
+    department.department_name AS 'department',
+     role.salary FROM employee, role, 
+     department WHERE department.id = role.department_id 
+     AND role.id = employee.role_id 
+     ORDER BY employee.id ASC`, function (err, results) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.table(results);
     }
-    console.table(results);
-  });
+  );
 }
 function viewRoles() {
   db.query("SELECT * FROM roles", function (err, results) {
@@ -121,12 +129,13 @@ function addDepartment() {
 }
 
 inquirer.prompt(mainQuestion).then((response) => {
-  console.log(response)
   if (response.initialize === "View All Employees") {
-    viewEmployee();
-  } else if (response.initialize === "Add Role") {
+    viewAllEmployees();
+  }
+  if (response.initialize === "Add Role") {
     addRole();
-  } else if (response.initialize === "Add department") {
+  }
+  if (response.initialize === "Add department") {
     addDepartment();
   }
 });

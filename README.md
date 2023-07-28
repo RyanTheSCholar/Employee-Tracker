@@ -1,7 +1,7 @@
 # Employee-Tracker
 - [repo](https://github.com/RyanTheSCholar/Employee-Tracker)
 
-- [WalkThrough link](https://youtu.be/HJGFEcyU9rI)
+- [WalkThrough link](https://youtu.be/zHmoOxf7kkQ)
 
 ## Description
 This project is for business management, adding and creating a database of employees, roles, and departments. I learned how to make a CLI using mySQL and JavaScript.

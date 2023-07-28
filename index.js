@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const table = require("console.table");
+var figlet = require("figlet");
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -17,7 +18,6 @@ const mainQuestion = {
   choices: [
     "View All Employees",
     "Add Employee",
-    "Update Employee role",
     "View All Roles",
     "Add Role",
     "View All Departments",
@@ -26,32 +26,7 @@ const mainQuestion = {
   ],
   loop: false,
 };
-// const departmentQuestions = [
-//   {
-//     name: "addDepartment",
-//     message: "What is the name of the department?",
-//     type: "input",
-//   },
-// ];
-// const roleQuestions = [
-//   {
-//     name: "nameOfRole",
-//     message: "What is the name of the role?",
-//     type: "input",
-//   },
-//   {
-//     name: "Salary",
-//     message: "What is the salary of the role?",
-//     type: "input",
-//   },
-//   {
-//     name: "departmentOfRole",
-//     message: "Which department does the role belong to?",
-//     type: "input",
-//   },
-// ];
 const viewAllEmployees = () => {
-  console.log(db);
   // SHOWS Table
   db.query(
     `SELECT employee.id, employee.first_name, employee.last_name, role.title, 
@@ -146,13 +121,13 @@ const addRole = () => {
   ];
   inquirer.prompt(roleQuestions).then((response) => {
     db.query(
-      `INSERT INTO role(title, salary, department_id) VALUES(?)`,
-      [response.title, response.salary, response.department_id],
+      `INSERT INTO role(title, salary, department_id) VALUES(?,?,?)`,
+      [response.nameOfRole, response.Salary, response.departmentOfRole],
       (err, response) => {
         if (err) {
           console.log(err);
-        } else {
-          console.log(`Added ${response.title}`);
+        }else{
+            console.log(`Added role`);
         }
         init();
       }
@@ -230,11 +205,11 @@ const addEmployee = () => {
     });
   });
 };
-
 const init = () => {
   inquirer
     .prompt(mainQuestion)
     .then((response) => {
+    
       if (response.initialize === "View All Employees") {
         viewAllEmployees();
       }

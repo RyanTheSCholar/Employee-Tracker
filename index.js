@@ -186,7 +186,7 @@ const addEmployee = () => {
     ];
     inquirer.prompt(employeeQuestions).then((response) => {
       db.query(
-        `INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES(?)`,
+        `INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES(?,?,?,?)`,
         [
           response.first_name,
           response.last_name,
@@ -197,7 +197,7 @@ const addEmployee = () => {
           if (err) {
             console.error(err);
           } else {
-            console.log(`Added ${response.first_name} ${response.last_name}`);
+            console.log(`Added Employee`);
           }
           init();
         }

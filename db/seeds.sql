@@ -23,9 +23,9 @@ INSERT INTO role(title, salary, department_id)
             ("Senior Associate", 180000, 3),
             ("Junior Associate", 120000, 3);
 
-INSERT INTO employees(first_name, last_name, role_id, manager_id)
+INSERT INTO employee(first_name, last_name, role_id, manager_id)
     VALUES  ("Harvey", "Specter", 4, NULL),
             ("Mike", "Ross", 6, 1),
-            ("Donna", "Paulsen", 2, 1),
-            ("Louis", "Litt", 7, 1),
+            ("Donna", "Paulsen", 1, 1),
+            ("Louis", "Litt", 5, 1),
             ("Katrina", "Bennett", 5, NULL);
